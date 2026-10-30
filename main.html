@@ -6,7 +6,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="items">
+  
+	<div class="items">
     <div class="item item1">01</div>
     <div class="item item2">02</div>
     <div class="item item3">03</div>
@@ -36,7 +37,78 @@
 
 <script>
 //Your code goes here 
-</script>
 
+let container = document.querySelector(".items");
+let cubes = document.querySelectorAll(".item");
+
+cubes.forEach((cube) => {
+
+    let startX = 0;
+    let startY = 0;
+
+    let initialX = 0;
+    let initialY = 0;
+
+    cube.addEventListener("mousedown", (e) => {
+
+        // Prevent default browser behavior
+        e.preventDefault();
+
+        // Get cube position
+        let rect = cube.getBoundingClientRect();
+        let containerRect = container.getBoundingClientRect();
+
+        // Store initial position
+        initialX = rect.left - containerRect.left;
+        initialY = rect.top - containerRect.top;
+
+        // Store mouse position
+        startX = e.clientX;
+        startY = e.clientY;
+
+        cube.classList.add("dragging");
+
+        // Mouse movement
+        function mouseMove(e) {
+
+            let dx = e.clientX - startX;
+            let dy = e.clientY - startY;
+
+            // Calculate new position
+            let newX = initialX + dx;
+            let newY = initialY + dy;
+
+            // Restrict movement inside container
+            let maxX = container.clientWidth - cube.offsetWidth;
+            let maxY = container.clientHeight - cube.offsetHeight;
+
+            newX = Math.max(0, Math.min(newX, maxX));
+            newY = Math.max(0, Math.min(newY, maxY));
+
+            // Move cube
+            let originalX = cube.offsetLeft;
+            let originalY = cube.offsetTop;
+
+            cube.style.transform =
+                `translate(${newX - originalX}px, ${newY - originalY}px)`;
+        }
+
+        // Mouse release
+        function mouseUp() {
+
+            cube.classList.remove("dragging");
+
+            document.removeEventListener("mousemove", mouseMove);
+            document.removeEventListener("mouseup", mouseUp);
+
+        }
+
+        document.addEventListener("mousemove", mouseMove);
+        document.addEventListener("mouseup", mouseUp);
+
+    });
+
+});
+</script>
   </body>
 </html>
